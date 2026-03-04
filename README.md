@@ -21,12 +21,14 @@ The first time you use it, the skill will ask you to paste your API key and will
 
 ## How to Install a Skill
 
-1. **Download the skill file** — in this repo, navigate to the skill folder (e.g. `skills/ydc-research-api/`) and download the `SKILL.md` file
+1. **Get a You.com API key** — this skill requires one to run. Get yours free at [you.com/api](https://you.com/api). You don't need it during install — the skill will prompt you to paste it the first time you use it.
 
-2. **Open the Claude skills page** — go to [claude.ai/customize/skills](https://claude.ai/customize/skills) in your browser
+2. **Download the skill file** — in this repo, navigate to the skill folder (e.g. `skills/ydc-research-api/`) and download the `SKILL.md` file
 
-3. **Click the `+` icon** at the top of the skills panel
+3. **Open the Claude skills page** — go to [claude.ai/customize/skills](https://claude.ai/customize/skills) in your browser
 
-4. **Paste the contents** of the `SKILL.md` file when prompted, then save
+4. **Click the `+` icon** at the top of the skills panel
 
-5. **Done** — the skill syncs to your Cowork desktop app automatically
+5. **Paste the contents** of the `SKILL.md` file when prompted, then save
+
+6. **Done** — the skill syncs to your Cowork desktop app automatically. The first time you use it, it will ask for your API key and save it for you.
