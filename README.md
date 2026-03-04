@@ -5,7 +5,7 @@ A collection of Cowork skills — anyone with Claude Cowork can install and use 
 ## Available Skills
 
 ### ydc-research-api
-Research any topic using the You.com Research API. Returns deep, multi-step web research with cited sources and inline citations.
+Use Claude Cowork to research any topic using the You.com Research API. Returns deep, multi-step web research with cited sources and inline citations.
 
 **Requires:** A You.com API key (free to get at [you.com/api](https://you.com/api))
 
