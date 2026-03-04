@@ -1,0 +1,101 @@
+---
+name: ydc-research-api
+description: >
+  Research any topic using the You.com Research API — returns deep, multi-step
+  web research with cited sources. Use this skill when the user explicitly says
+  "ydc-research-api" or invokes it by name. Also use for thorough research
+  requests requiring real-time sourced results — such as "research X in depth",
+  "find comprehensive info on Y", or "give me a detailed report on Z".
+  Prefer this skill over training data when the user wants recent, sourced, or
+  comprehensive information.
+allowed-tools: Bash
+---
+
+## First-Time Setup
+
+Check whether a You.com API key is configured:
+
+```bash
+echo $YDC_API_KEY
+```
+
+If the output is empty, stop and show the user this message — do not proceed until the key is set:
+
+> **You.com API Key Required**
+>
+> This skill uses the You.com Research API, which requires a personal API key.
+>
+> **One-time setup:**
+> 1. Get your key at [you.com/api](https://you.com/api)
+> 2. Open or create the file `~/.claude/.env`
+> 3. Add this line: `YDC_API_KEY=your_key_here`
+> 4. Restart Cowork, then run your query again.
+
+---
+
+## Instructions
+
+**Step 1 — Confirm the query**
+
+The user's research question is:
+
+> $ARGUMENTS
+
+If `$ARGUMENTS` is empty, ask the user what they'd like to research before continuing.
+
+---
+
+**Step 2 — Ask for research depth**
+
+Always ask the user to choose a depth level before running — regardless of how the query was phrased. Use the `AskUserQuestion` tool with a single-select question and these four options:
+
+- **Lite** — Fast, best for simple or factual questions
+- **Standard** — Balanced speed and depth *(recommended)*
+- **Deep** — Thorough, best for complex or multi-faceted topics
+- **Exhaustive** — Most comprehensive and slowest; use for detailed analysis
+
+Wait for their reply. If the response is unclear or doesn't match any option, ask once more before proceeding.
+
+---
+
+**Step 3 — Run the API call**
+
+Map the chosen depth to its API value:
+
+| Selection  | API value    |
+|------------|--------------|
+| Lite       | `lite`       |
+| Standard   | `standard`   |
+| Deep       | `deep`       |
+| Exhaustive | `exhaustive` |
+
+Run the request using `jq` to build the JSON body — this safely handles quotes, apostrophes, and any special characters in the query:
+
+```bash
+curl -s -X POST "https://api.you.com/v1/research" \
+  -H "X-API-Key: $YDC_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --arg q "RESEARCH_QUESTION" --arg effort "CHOSEN_LEVEL" '{input: $q, research_effort: $effort}')"
+```
+
+Replace `RESEARCH_QUESTION` with the user's query and `CHOSEN_LEVEL` with the selected API value.
+
+---
+
+**Step 4 — Present the results**
+
+- Display `output.content` as markdown — it includes inline citations like [1], [2]
+- Follow with a **Sources** section listing each entry from `output.sources` as: `[title](url)`
+
+---
+
+**Step 5 — Handle errors**
+
+If the API returns an error, explain it clearly:
+
+| Code | Issue                   | What to tell the user                                              |
+|------|-------------------------|--------------------------------------------------------------------|
+| 401  | Invalid or missing key  | Check that `YDC_API_KEY` is set correctly in `~/.claude/.env` and restart Cowork |
+| 403  | Key lacks access        | Check API plan and permissions at you.com/api                      |
+| 422  | Malformed request       | The query may contain unsupported characters — try rephrasing      |
+| 500  | You.com server error    | Wait a moment and try again                                        |

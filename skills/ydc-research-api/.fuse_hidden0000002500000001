@@ -1,0 +1,59 @@
+---
+name: research
+description: Research any topic using the You.com Research API. Performs multi-step web research and returns a well-cited answer. Use when the user asks to research, look up, or find information about a topic.
+argument-hint: [research question]
+disable-model-invocation: true
+allowed-tools: Bash
+---
+
+Research the following question using the You.com Research API:
+
+$ARGUMENTS
+
+## Instructions
+
+1. Check if the `YDC_API_KEY` environment variable is set:
+
+```bash
+echo $YDC_API_KEY
+```
+
+If it is empty or unset, tell the user to set it with `export YDC_API_KEY=your_key_here` and stop.
+
+2. Unless the user already included a depth level in their query (e.g. "deep research on..."), ask them in chat:
+
+   > Which research depth would you like?
+   > - **1. Lite** — Fast, best for simple or factual questions
+   > - **2. Standard** — Balanced speed and depth (recommended)
+   > - **3. Deep** — Thorough, best for complex topics
+   > - **4. Exhaustive** — Most comprehensive, slowest
+
+   Wait for their reply before proceeding.
+
+3. Map their choice to the API value:
+   - 1 or "lite" → `lite`
+   - 2 or "standard" → `standard`
+   - 3 or "deep" → `deep`
+   - 4 or "exhaustive" → `exhaustive`
+   - If they just press enter or say "default", use `standard`
+
+4. Run the API call using the chosen depth level:
+
+```bash
+curl -s -X POST "https://api.you.com/v1/research" \
+  -H "X-API-Key: $YDC_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"input\": \"RESEARCH_QUESTION\", \"research_effort\": \"CHOSEN_LEVEL\"}"
+```
+
+Replace `RESEARCH_QUESTION` with the user's question (properly JSON-escaped) and `CHOSEN_LEVEL` with the selected level.
+
+5. Present the results:
+   - Display `output.content` as markdown (it contains inline citations like [1], [2])
+   - Add a **Sources** section listing each `output.sources` entry as: `[title](url)`
+
+6. If the API returns an error, explain what went wrong:
+   - 401 — Invalid or missing API key
+   - 403 — Key doesn't have access to this endpoint
+   - 422 — Bad request (check the question format)
+   - 500 — You.com server error, try again

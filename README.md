@@ -4,7 +4,7 @@ A collection of Cowork skills — anyone with Claude Cowork can install and use 
 
 ## Available Skills
 
-### youcom-research
+### ydc-research-api
 Research any topic using the You.com Research API. Returns deep, multi-step web research with cited sources and inline citations.
 
 **Requires:** A You.com API key (free to get at [you.com/api](https://you.com/api))
@@ -15,18 +15,18 @@ Research any topic using the You.com Research API. Returns deep, multi-step web 
 
 The most reliable way is to reference the skill by name in your message:
 
-> *"use youcom-research to find the best electric cars of 2026"*
+> *"use ydc-research-api to find the best electric cars of 2026"*
 
-Saying something generic like *"research X"* may work but could instead use Cowork's built-in web search or the base AI model rather than the You.com Research API.
+Saying something generic like *"research X"* may invoke a different built-in skill rather than the You.com Research API.
 
 ## Installing a Skill
 
 1. Clone or download this repo
-2. Copy the skill folder (e.g. `skills/youcom-research/`) into `~/.claude/skills/`
-   - On Mac, open Finder → press **Cmd+Shift+G** → type `~/.claude/skills/`
+2. Copy the skill folder (e.g. `skills/ydc-research-api/`) into `~/.agents/skills/`
+   - On Mac, open Finder → press **Cmd+Shift+G** → type `~/.agents/skills/`
 3. Restart Cowork — the skill is immediately available
 
-## First-Time API Key Setup (youcom-research)
+## First-Time API Key Setup (ydc-research-api)
 
 1. Get your key at [you.com/api](https://you.com/api)
 2. Open or create `~/.claude/.env`
