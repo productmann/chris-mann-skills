@@ -11,6 +11,14 @@ Research any topic using the You.com Research API. Returns deep, multi-step web 
 
 **API Docs:** [You.com Research API Overview](https://docs.you.com/research/overview)
 
+**How to invoke in Cowork:**
+
+The most reliable way is to reference the skill by name in your message:
+
+> *"use youcom-research to find the best electric cars of 2026"*
+
+Saying something generic like *"research X"* may work but could instead use Cowork's built-in web search or the base AI model rather than the You.com Research API.
+
 ## Installing a Skill
 
 1. Clone or download this repo
