@@ -16,20 +16,30 @@ allowed-tools: Bash
 Check whether a You.com API key is configured:
 
 ```bash
-echo $YDC_API_KEY
+source ~/.claude/.env 2>/dev/null; echo $YDC_API_KEY
 ```
 
-If the output is empty, stop and show the user this message — do not proceed until the key is set:
+If the output is empty, the key is not yet set. Use the `AskUserQuestion` tool to ask:
 
 > **You.com API Key Required**
 >
-> This skill uses the You.com Research API, which requires a personal API key.
+> This skill needs a You.com API key to run. You can get one free at [you.com/api](https://you.com/api).
 >
-> **One-time setup:**
-> 1. Get your key at [you.com/api](https://you.com/api)
-> 2. Open or create the file `~/.claude/.env`
-> 3. Add this line: `YDC_API_KEY=your_key_here`
-> 4. Restart Cowork, then run your query again.
+> Once you have it, paste your key here and I'll save it for you automatically.
+
+Wait for the user to paste their key. Then save it:
+
+```bash
+mkdir -p ~/.claude
+touch ~/.claude/.env
+# Remove any existing YDC_API_KEY line and append the new one
+grep -v "^YDC_API_KEY=" ~/.claude/.env > /tmp/.env_tmp && mv /tmp/.env_tmp ~/.claude/.env
+echo "YDC_API_KEY=PASTED_KEY" >> ~/.claude/.env
+source ~/.claude/.env
+echo "Key saved: $YDC_API_KEY"
+```
+
+Replace `PASTED_KEY` with what the user provided. Confirm the key was saved, then continue.
 
 ---
 
@@ -95,7 +105,7 @@ If the API returns an error, explain it clearly:
 
 | Code | Issue                   | What to tell the user                                              |
 |------|-------------------------|--------------------------------------------------------------------|
-| 401  | Invalid or missing key  | Check that `YDC_API_KEY` is set correctly in `~/.claude/.env` and restart Cowork |
+| 401  | Invalid or missing key  | Ask the user to double-check their key at you.com/api and paste it again |
 | 403  | Key lacks access        | Check API plan and permissions at you.com/api                      |
 | 422  | Malformed request       | The query may contain unsupported characters — try rephrasing      |
 | 500  | You.com server error    | Wait a moment and try again                                        |
